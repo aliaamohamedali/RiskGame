@@ -9,6 +9,8 @@ import java.util.Set;
 
 public class AStarPlayer extends AbstractAIPlayer {
 
+    public static int MAX_DEPTH = 10;
+    
     public AStarPlayer(int id, Map map) {
         super(id, map);
 
@@ -20,13 +22,7 @@ public class AStarPlayer extends AbstractAIPlayer {
         super.takeTurn(); // Sets mapState, freeTroops
 
         this.setNextMove();
-
-        /*moves.getDeployments().forEach((deployment) -> {
-            System.out.println(deployment);
-        });
-        moves.getAttackSequence().forEach((attack) -> {
-            System.out.println(attack);
-        });*/
+        
         return this.moves;
     }
 
@@ -42,28 +38,41 @@ public class AStarPlayer extends AbstractAIPlayer {
                 return -1;
             }
         });
-        
-        
-        
-        State s;
 
+        State s;
+        State bestStateYet = this.mapState;
+        int search_Depth = 0;
         frontier.add(this.mapState);
         int x = 0;
         while (!frontier.isEmpty()) {
-            // if ((x++ % 100) == 0)
+            //if ((x++ % 100) == 0) {
             //    System.out.println("Frontier Size: " + frontier.size());
+            //}
             s = frontier.poll();
             explored.add(s);
             
-             System.out.println("MyTerritories: " + s.getMyTerritories().size());
-             System.out.println("Turn #: "  + s.getDepth());
-
+            // System.out.println("MyTerritories: " + s.getMyTerritories().size());
+            // System.out.println("Turn #: " + s.getDepth());
+            
+            search_Depth = Integer.max(s.getDepth(),search_Depth);
+            
             if (s.goalTest()) {
                 // System.out.println("Gaol State Depth: " + s.getDepth());
                 // System.out.println("Next Move: ");
                 this.moves = this.getTransitionMove(s);
                 return;
             }
+            
+            if(s.getCost() < bestStateYet.getCost()){
+                bestStateYet = s;
+            }
+            
+            if (search_Depth > MAX_DEPTH){
+                // System.out.println("Best State Found: " + bestStateYet.toString());
+                this.moves = this.getTransitionMove(bestStateYet);
+                return;
+            }
+            
             //ArrayList<State> nextMoves = s.generateChildren();
             //System.out.println("Children Count: " + nextMoves.size());
             for (State child : s.generateChildren()) {
@@ -77,7 +86,6 @@ public class AStarPlayer extends AbstractAIPlayer {
                 }
             }
         }
-        // System.out.println("searchEnded: " + frontier.size());
     }
 
     private Move getTransitionMove(State s) {

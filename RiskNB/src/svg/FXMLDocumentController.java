@@ -550,6 +550,17 @@ public class FXMLDocumentController implements Initializable {
     };
 
     private void distributeNext() {
+        // CONSTANT DEPLOYMENT FOR EVALUATION
+        /*
+        for(int i= 1; i < 49; i++){
+            this.board.getMap().getTerritory(i).setPlayer(this.board.getPlayers().get(i % 2));
+            this.board.getMap().getTerritory(i).setTroops(2);
+            svgPaths[i].setFill(Paint.valueOf(COLORS[this.board.getPlayers().get(i % 2).getID()]));
+            troopCountLabel[i].setText("2");
+        }
+        return;
+        */
+        
         if (totalRemainingTroops <= 0) {
             return;
         }

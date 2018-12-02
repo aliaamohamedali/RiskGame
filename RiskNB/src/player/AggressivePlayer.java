@@ -39,10 +39,7 @@ public class AggressivePlayer extends Player {
                 maxT = territories[i];
             }
         }
-        /*
-		maxT.setTroops(maxT.getTroops() + this.freeTroops);
-		return;
-         */
+        
         Point deployment = new Point();
         deployment.x = this.mapState.getNewTroops();
         deployment.y = maxT.getID();

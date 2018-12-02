@@ -90,7 +90,5 @@ public class Expectations {
             }
         }
         return losses;
-    }
-
-    
+    }   
 }

@@ -1,6 +1,5 @@
 package board;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 import player.*;
@@ -9,17 +8,16 @@ public class Board {
 
     public static final boolean USA = true;
     public static final boolean EGY = true;
+    public static final int USA_SIZE = 49;   
+    public static final int EGY_SIZE = 28;
 
     private static Board INSTANCE;
     // private static final boolean EGYPT = false;
 
-    private final Color[] colors = {Color.red, Color.blue, Color.green, Color.yellow, Color.cyan, Color.magenta};
-
     private Map map;
     private ArrayList<Player> players;
 
-    private Board() {
-    }
+    private Board() {}
 
     public static Board getInstance() {
         if (Board.INSTANCE == null) {
@@ -40,12 +38,12 @@ public class Board {
 
     }
 
-    public Map getMap() {
-        return this.map;
-    }
-
     public ArrayList<Player> getPlayers() {
         return this.players;
+    }
+    
+    public Map getMap() {
+        return this.map;
     }
 
     private void setMap(boolean terrain) {
@@ -57,7 +55,7 @@ public class Board {
 
     private void buildStates() {
 
-        this.map = new Map(51);
+        this.map = new Map(this.USA_SIZE);
 
         map.addNeighbour(1, 2);
         map.addNeighbour(1, 5);

@@ -14,6 +14,11 @@ public class GreedyAIPlayer extends AbstractAIPlayer {
         // TODO Auto-generated constructor stub
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public Move takeTurn() {
 
         super.takeTurn(); // Sets mapState, freeTroops
@@ -28,7 +33,7 @@ public class GreedyAIPlayer extends AbstractAIPlayer {
     protected void setNextMove() {
         // TODO Auto-generated method stub
         ArrayList<State> children = this.mapState.generateChildren();
-        System.out.println("branching Factor:" + children.size());
+        //System.out.println("branching Factor:" + children.size());
 
         State bestChildState = children.get(0);
         for (int i = 1; i < children.size(); i++) {

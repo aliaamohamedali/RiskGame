@@ -10,9 +10,9 @@ public class Map {
     private int[][] distances;
 
     public Map(int size) {
-        this.territories = new Territory[49];
-        this.adjacencyList = new ArrayList[49];
-        for (int i = 0; i < 49; i++) {
+        this.territories = new Territory[size];
+        this.adjacencyList = new ArrayList[size];
+        for (int i = 0; i < size; i++) {
             adjacencyList[i] = new ArrayList<>();
             territories[i] = new Territory(i);
         }
@@ -93,8 +93,6 @@ public class Map {
         return hash;
     }
 
-    
-    
     @Override
     public Map clone() {
         Map copy = new Map(this.territories.length);

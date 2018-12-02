@@ -2,7 +2,6 @@ package player;
 
 import board.Map;
 import board.Move;
-import board.State;
 
 public abstract class AbstractAIPlayer extends Player{
 
@@ -12,7 +11,7 @@ public abstract class AbstractAIPlayer extends Player{
 	}
 
 	//// For AI players ////
-	// Same deployment strategy: Minimize average BSR.
+	// Same deployment strategy.
 	// Attacking Strategy: 
 	//   Maximize number of territories 
 	//   Minimize average BSR (Do not overextend)
@@ -28,6 +27,4 @@ public abstract class AbstractAIPlayer extends Player{
 
 	protected abstract void setNextMove();
 
-
-	
 }

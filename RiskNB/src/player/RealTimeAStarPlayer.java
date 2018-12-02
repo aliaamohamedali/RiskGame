@@ -23,13 +23,7 @@ public class RealTimeAStarPlayer extends AbstractAIPlayer {
         super.takeTurn(); // Sets mapState, freeTroops
 
         this.setNextMove();
-
-        /*moves.getDeployments().forEach((deployment) -> {
-            System.out.println(deployment);
-        });
-        moves.getAttackSequence().forEach((attack) -> {
-            System.out.println(attack);
-        });*/
+        
         return this.moves;
     }
 
@@ -93,6 +87,7 @@ public class RealTimeAStarPlayer extends AbstractAIPlayer {
                 }
             }
         }
+        // System.out.println("# of Expansions: " + explored.size());
         // System.out.println("searchEnded: " + frontier.size());
     }
 

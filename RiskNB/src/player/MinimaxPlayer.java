@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class MinimaxPlayer extends Player {
 
+    public static int MAX_DEPTH = 10;
+    
     public MinimaxPlayer(int id, Map map) {
         super(id, map);
 
@@ -71,7 +73,6 @@ public class MinimaxPlayer extends Player {
                 beta = minState.getUtility();
             }
         }
-
         return minState;
     }
 

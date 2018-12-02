@@ -2,10 +2,8 @@ package board;
 
 import java.util.ArrayList;
 import java.awt.Point;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import player.Player;
 import player.AStarPlayer;
@@ -28,11 +26,6 @@ public class State implements Comparable<Object> {
 
     public ArrayList<Territory> getMyTerritories() {
         return myTerritories;
-    }
-
-    @Override
-    public String toString() {
-        return "State{" + "heuristic=" + heuristic + "depth=" + depth + '}';
     }
 
     // Constructor
@@ -64,7 +57,7 @@ public class State implements Comparable<Object> {
     // Children
     public ArrayList<State> generateChildren() {
 
-        this.calculateTerritoryFeautures(null);
+        this.calculateTerritoryFeatures(null);
         this.deployTroops2();
 
         // Features change after deployments so need to be recalculated
@@ -75,7 +68,7 @@ public class State implements Comparable<Object> {
             intermediateMap.getTerritory(deployment.y).addTroops(deployment.x);
         }
 
-        this.calculateTerritoryFeautures(intermediateMap);
+        this.calculateTerritoryFeatures(intermediateMap);
         this.setAttackCombinations(intermediateMap);
 
         for (Move move : moves) {
@@ -93,7 +86,6 @@ public class State implements Comparable<Object> {
             }
             this.children.add(new State(this, this.player, mapClone, move, this.depth + 1));
         }
-
         return this.children;
     }
 
@@ -214,7 +206,7 @@ public class State implements Comparable<Object> {
 
     }
 
-    private void calculateTerritoryFeautures(Map map) {
+    private void calculateTerritoryFeatures(Map map) {
 
         Map calculateIn = map == null ? this.map : map;
 
@@ -237,7 +229,75 @@ public class State implements Comparable<Object> {
         }
     }
 
-    private double calculateHeuristic() {
+    private void setAttackCombinations(Map map) {
+
+        ArrayList<Territory> reInforcedTerritories = new ArrayList<>();
+
+        Territory[] territories = map.getTerritories();
+        for (int i = 1; i < territories.length; i++) {
+            if (this.player.equals(territories[i].getPlayer())) {
+                reInforcedTerritories.add(territories[i]);
+            }
+        }
+
+        ArrayList<Point> attackPairs = new ArrayList<>();
+        for (Territory reInforcedTerritory : reInforcedTerritories) {
+            if (reInforcedTerritory.getTroops() > 1 && reInforcedTerritory.getBSR() > 0) {
+                ArrayList<Integer> neighbourIDs = map.getNeighbours(reInforcedTerritory.getID());
+                for (Integer neighbourID : neighbourIDs) {
+                    if (!this.player.equals(map.getTerritory(neighbourID).getPlayer())) {
+                        double probability = Expectations.getProbability(reInforcedTerritory.getTroops(), map.getTerritory(neighbourID).getTroops());
+                        //System.out.print("probability:" + x + "   ");
+                        Point a = new Point(reInforcedTerritory.getID(), neighbourID);
+                        //System.out.println(a);
+                        if (probability > 0.6) {
+                            attackPairs.add(a);
+                            //System.out.println("Added");
+                        }
+                    }
+                }
+            }
+        }
+        int size = attackPairs.size();
+
+        loop:
+        for (int i = 0; i < (1 << size); i++) {
+            Move move = new Move();
+            move.setDeployments(deployments);
+
+            Set<Integer> attackingTerritoryIDs = new HashSet<>();
+            Set<Integer> defendingTerritoryIDs = new HashSet<>();
+
+            for (int j = 0; j < size; j++) {
+                if ((i & (1 << j)) > 0) {
+                    if (attackingTerritoryIDs.contains(attackPairs.get(j).x) || defendingTerritoryIDs.contains(attackPairs.get(j).y)) {
+                        continue loop;
+                    }
+                    attackingTerritoryIDs.add(attackPairs.get(j).x);
+                    defendingTerritoryIDs.add(attackPairs.get(j).y);
+                    move.addAttack(attackPairs.get(j));
+                }
+            }
+            //boolean discarded = false;
+            /*System.out.print("Sequence # " + (i + 1) + "  ");
+            move.getAttackSequence().forEach((attack) -> {
+                System.out.print(attack + "  ");
+            });
+            System.out.println();
+             */
+            moves.add(move);
+        }
+        if (this.player instanceof AStarPlayer || this.player instanceof MinimaxPlayer) {
+            moves.sort((Object o1, Object o2) -> ((Move) o1).getAttackSequence().size() - ((Move) o2).getAttackSequence().size());
+            int sizeLimit = (int) Math.ceil(Math.log(moves.size())) + 1;
+            while (moves.size() > sizeLimit) {
+                moves.remove(0);
+            }
+        }
+        System.out.println("Moves size inside the state: " + moves.size());
+    }
+    
+    private int calculateHeuristic() {
         int max = 0;
         int[] minDistance = new int[49];
         for (int i = 1; i < 49; i++) {
@@ -253,7 +313,7 @@ public class State implements Comparable<Object> {
                 }
             }
         }
-        double temp = 0;
+        int temp = 0;
         for (int i = 1; i < 49; i++) {
             if (minDistance[i] != Integer.MAX_VALUE) {
                 temp = Math.max(this.heuristic, minDistance[i]);
@@ -297,11 +357,11 @@ public class State implements Comparable<Object> {
         return 2 * armiesFeature + 3 * hinterlandFeature + 5 * multipleArmiesFeature + 7 * unoccupiedTerritoryFeature;
     }
 
-    private double calculateHeuristic3() {
+    private int calculateHeuristic3() {
         Territory[] territories = this.map.getTerritories();
-        double troops = 0;
+        int troops = 0;
         for (int i = 1; i < territories.length; i++) {
-            if (this.player.equals(territories[i].getPlayer())) {
+            if (!this.player.equals(territories[i].getPlayer())) {
                 troops += territories[i].getTroops();
             }
         }
@@ -311,76 +371,7 @@ public class State implements Comparable<Object> {
     private int calculateHeuristic4() {
         return this.map.getTerritories().length - myTerritories.size() - 1;
     }
-
-    private void setAttackCombinations(Map map) {
-
-        ArrayList<Territory> reInforcedTerritories = new ArrayList<>();
-
-        Territory[] territories = map.getTerritories();
-        for (int i = 1; i < territories.length; i++) {
-            if (this.player.equals(territories[i].getPlayer())) {
-                reInforcedTerritories.add(territories[i]);
-            }
-        }
-
-        ArrayList<Point> attackPairs = new ArrayList<>();
-        for (Territory reInforcedTerritory : reInforcedTerritories) {
-            if (reInforcedTerritory.getTroops() > 1 && reInforcedTerritory.getBSR() > 0) {
-                ArrayList<Integer> neighbourIDs = map.getNeighbours(reInforcedTerritory.getID());
-                for (Integer neighbourID : neighbourIDs) {
-                    if (!this.player.equals(map.getTerritory(neighbourID).getPlayer())) {
-                        double x = Expectations.getProbability(reInforcedTerritory.getTroops(), map.getTerritory(neighbourID).getTroops());
-                        //System.out.print("probability:" + x + "   ");
-                        Point a = new Point(reInforcedTerritory.getID(), neighbourID);
-                        //System.out.println(a);
-                        if (x > 0.6) {
-                            attackPairs.add(a);
-                            //System.out.println("Added");
-                        }
-
-                    }
-                }
-            }
-        }
-        int size = attackPairs.size();
-
-        loop:
-        for (int i = 0; i < (1 << size); i++) {
-            Move move = new Move();
-            move.setDeployments(deployments);
-
-            Set<Integer> attackingTerritoryIDs = new HashSet<>();
-            Set<Integer> defendingTerritoryIDs = new HashSet<>();
-
-            for (int j = 0; j < size; j++) {
-                if ((i & (1 << j)) > 0) {
-                    if (attackingTerritoryIDs.contains(attackPairs.get(j).x) || defendingTerritoryIDs.contains(attackPairs.get(j).y)) {
-                        continue loop;
-                    }
-                    attackingTerritoryIDs.add(attackPairs.get(j).x);
-                    defendingTerritoryIDs.add(attackPairs.get(j).y);
-                    move.addAttack(attackPairs.get(j));
-                }
-            }
-            //boolean discarded = false;
-            /*System.out.print("Sequence # " + (i + 1) + "  ");
-            move.getAttackSequence().forEach((attack) -> {
-                System.out.print(attack + "  ");
-            });
-            System.out.println();
-           */
-            moves.add(move);
-        }
-        if (this.player instanceof AStarPlayer || this.player instanceof MinimaxPlayer) {
-            moves.sort((Object o1, Object o2) -> ((Move)o1).getAttackSequence().size() - ((Move)o2).getAttackSequence().size());
-            int sizeLimit = (int)Math.ceil(moves.size()/3);
-            while (moves.size() > sizeLimit){
-                moves.remove(0);
-            }
-        }
-        //System.out.println("Moves size inside the state: " + moves.size());
-    }
-
+    
     // GETTERS
     public int getHeuristic() {
         return this.heuristic;
@@ -410,7 +401,12 @@ public class State implements Comparable<Object> {
         return this.depth;
     }
 
-    // Methods for State comparison
+    // Overridden Methods for State comparison
+    @Override
+    public String toString() {
+        return "State{" + "heuristic=" + heuristic + "depth=" + depth + '}';
+    }
+
     @Override
     public boolean equals(Object otherState) {
         if (otherState.getClass() != State.class) {

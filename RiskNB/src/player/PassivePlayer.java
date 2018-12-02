@@ -34,10 +34,7 @@ public class PassivePlayer extends Player {
                 minT = territories[i];
             }
         }
-        /*
-		minT.setTroops(minT.getTroops() + this.freeTroops);
-		return;
-         */
+        
         Point deployment = new Point();
         deployment.x = this.mapState.getNewTroops();
         deployment.y = minT.getID();
