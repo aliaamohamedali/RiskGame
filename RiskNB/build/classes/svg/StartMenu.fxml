@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="svg.StartMenuController">
+   <children>
+      <Label disable="true" layoutX="36.0" layoutY="45.0" prefHeight="30.0" prefWidth="100.0" text="Mode" />
+      <Label disable="true" layoutX="36.0" layoutY="124.0" prefHeight="30.0" prefWidth="100.0" text="Number of Players" />
+      <Label disable="true" layoutX="36.0" layoutY="190.0" prefHeight="30.0" prefWidth="100.0" text="Terrain" />
+      <Button layoutX="366.0" layoutY="244.0" mnemonicParsing="false" onMouseClicked="#startGame" prefHeight="25.0" prefWidth="80.0" text="Start Game" />
+      <RadioButton fx:id="simMode" layoutX="36.0" layoutY="73.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Simulation" />
+      <RadioButton fx:id="gameMode" layoutX="36.0" layoutY="98.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Game" />
+      <TextField fx:id="playerCountTF" layoutX="36.0" layoutY="159.0" prefHeight="25.0" prefWidth="100.0" />
+      <RadioButton fx:id="USATerrain" layoutX="36.0" layoutY="222.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="60.0" text="USA" />
+      <RadioButton fx:id="EgyTerrain" layoutX="36.0" layoutY="248.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="60.0" text="Egypt" />
+      <Label disable="true" layoutX="156.0" layoutY="52.0" prefHeight="17.0" prefWidth="60.0" text="Player 1" />
+      <Label disable="true" layoutX="156.0" layoutY="90.0" prefHeight="17.0" prefWidth="60.0" text="Player 2" />
+      <Label disable="true" layoutX="156.0" layoutY="134.0" prefHeight="17.0" prefWidth="60.0" text="Player 3" />
+      <Label disable="true" layoutX="156.0" layoutY="171.0" prefHeight="17.0" prefWidth="60.0" text="Player 4" />
+      <Label disable="true" layoutX="156.0" layoutY="214.0" prefHeight="17.0" prefWidth="60.0" text="Player 5" />
+      <Label disable="true" layoutX="156.0" layoutY="248.0" prefHeight="17.0" prefWidth="60.0" text="Player 6" />
+      <TextField fx:id="player1" layoutX="216.0" layoutY="48.0" prefHeight="25.0" prefWidth="100.0" />
+      <TextField fx:id="player2" layoutX="216.0" layoutY="86.0" prefHeight="25.0" prefWidth="100.0" />
+      <TextField fx:id="player3" layoutX="216.0" layoutY="127.0" prefHeight="25.0" prefWidth="100.0" />
+      <TextField fx:id="player4" layoutX="216.0" layoutY="167.0" prefHeight="25.0" prefWidth="100.0" />
+      <TextField fx:id="player5" layoutX="216.0" layoutY="208.0" prefHeight="25.0" prefWidth="100.0" />
+      <TextField fx:id="player6" layoutX="216.0" layoutY="244.0" prefHeight="25.0" prefWidth="100.0" />
+      <Label layoutX="346.0" layoutY="48.0" prefHeight="25.0" prefWidth="120.0"  text="Human Player:         1" />
+      <Label layoutX="346.0" layoutY="167.0" prefHeight="25.0" prefWidth="120.0" text="A* Player:            6" />
+      <Label layoutX="346.0" layoutY="98.0" prefHeight="25.0" prefWidth="120.0"  text="Aggressive Player:    3" />
+      <Label layoutX="346.0" layoutY="147.0" prefHeight="25.0" prefWidth="120.0" text="Greedy Player:        5" />
+      <Label layoutX="346.0" layoutY="122.0" prefHeight="25.0" prefWidth="120.0" text="Semi-Passive Player:  4" />
+      <Label layoutX="346.0" layoutY="73.0" prefHeight="25.0" prefWidth="120.0"  text="PassivePlayer:        2" />
+      <Label layoutX="346.0" layoutY="193.0" prefHeight="25.0" prefWidth="120.0" text="Real-Time A* Player:  7" />
+      <Label layoutX="346.0" layoutY="219.0" prefHeight="25.0" prefWidth="120.0" text="Minimax Player:       8" />
+   </children>
+</AnchorPane>
